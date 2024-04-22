@@ -1,0 +1,154 @@
+= Casper Event Toolkit
+
+Toolkit for fetching and parsing *contract-level events* that follow the [Casper Event Standard](https://github.com/make-software/casper-event-standard). Enables the event-driven pattern for *Rust* applications integrated with *Casper blokchain*.
+
+*NOTE:* _Casper Event Toolkit_ is similar to MAKE's [ces-go-parser](https://github.com/make-software/ces-go-parser) and [ces-js-parser](https://github.com/make-software/ces-js-parser), but enhanced with ability to get events directly from the global storage.
+
+== Requirements
+
+. Rust
+. async runtime
+
+== Install
+
+[source, sh]
+----
+$ cargo add --git https://github.com/koxu1996/casper-event-toolkit.git
+----
+
+== Usage
+
+You can find full code example at `./examples/cep78_demo.rs`, which can be executed with:
+
+[source, sh]
+----
+$ cargo run --example cep78_demo
+----
+
+We will walk through it to understand *API of this library*.
+
+=== 1. Create RPC client
+
+In order to fetch data from Casper L1, we need RPC client:
+
+[source, rust]
+----
+let client = CasperClient::default_mainnet();
+//let client = CasperClient::default_testnet();
+//let client = CasperClient::new(rpc_endpoint_url);
+----
+
+You can rely on predefined endpoints for _mainnet_ and _testnet_, or provide your own URL.
+
+=== 2. Fetch CES metadata
+
+For given *smart contract*, we need to find blockchain's storage address where the following data is stored:
+. events schema,
+. events data,
+. events count.
+
+This is so called *CES metadata*, and can be fetched with utility:
+
+[source, rust]
+----
+let smart_contract_hash: &str = "fe03021407879ce6fc5e035b70ff6a90941afdbea325a9164c7a497827efa7ff"; 
+let metadata = CesMetadataRef::fetch_metadata(&client, smart_contract_hash).await?;
+----
+
+=== 3. Construct events fetcher
+
+By combining _RPC client_ and _CES metadata_, *events fetcher* can be constructed:
+
+[source, rust]
+----
+let fetcher = Fetcher {
+    client,
+    ces_metadata: metadata,
+};
+----
+
+It can be used for fetching events _schema_, _count_ and _data_, which we will cover in the next steps respectively.
+
+=== 4. Load events schema
+
+Schema is required for parsing events data. It can be loaded locally:
+
+[source, rust]
+----
+let schemas = cep78::schemas::get_local_schemas();
+----
+
+You can also fetch it from the blockchain using _fetcher_:
+
+[source, rust]
+----
+let schemas = fetcher.fetch_schema().await?;
+----
+
+=== 5. (Option A) Fetch events from deployment effects
+
+If you know *deployment hash* and want to parse events based on execution results, you can do it with _fetcher_ and _schemas_:
+
+[source, rust]
+----
+let deploy_hash: &str = "657ff0cd295bf398988c12f913d3da62946039aab592da0eb5e577627e9bcaf5"
+let events = fetcher.fetch_events_from_deploy(deploy_hash, &schemas).await?;
+//println!("{:?}", events);
+----
+
+=== 5. (Option B) Fetch events from L1
+
+You should start by querying *number of events* that were emitted:
+
+[source, rust]
+----
+let num_events = fetcher.fetch_events_count().await?;
+//println!("Events count: {}", num_events);
+----
+
+Then you can fetch particular event - IDs are numbers incrementing from 0:
+
+[source, rust]
+----
+let event_id = 3;
+let event = fetcher.fetch_event(event_id, &schemas).await?;
+//println!("{:?}", event);
+----
+
+=== 6. Optional - parse event
+
+No matter if you used *option A* (fetch events from deployment results), or *option B* (fetch event directly from the storage), you will end up with event(s) containing fields in Casper serialization format i.e. *CLValue*:
+
+[source, rust]
+----
+pub struct Event {
+    pub name: String,
+    pub fields: Vec<(String, CLValue)>, // CLValue here!!!
+}
+----
+
+If you have particular event definition, you can use `to_ces_bytes()` utility for parsing it:
+
+[source, rust]
+----
+#[derive(Event, Debug)]
+pub struct Mint {
+    recipient: Key,
+    token_id: String,
+    data: String,
+}
+
+// ...
+
+match event.name.as_str() {
+    "Mint" => {
+        let data = event.to_ces_bytes()?;
+        let (mint_event, rem) = cep78::events::Mint::from_bytes(&data)?;
+        //println!("{:?}", mint_event);
+----
+
+This will give you the access to all named and typed fields.
+
+== License
+
+This project is licensed under the terms of the link:LICENSE[MIT license].

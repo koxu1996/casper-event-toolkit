@@ -1,0 +1,18 @@
+[package]
+name = "casper-event-toolkit"
+edition = "2021"
+authors = ["Andrzej Broński <andrzej1_1@o2.pl>"]
+
+[lib]
+
+[[example]]
+name = "cep78_demo"
+
+[dependencies]
+casper-client = "2.0.0"
+casper-event-standard = "0.4.1"
+casper-hashing = "2.0.0"
+casper-types = "3.0.0"
+hex = "0.4"
+thiserror = "1.0"
+tokio = { version = "1", features = ["full"] }

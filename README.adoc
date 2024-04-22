@@ -1,8 +1,8 @@
 = Casper Event Toolkit
 
-Toolkit for fetching and parsing *contract-level events* that follow the [Casper Event Standard](https://github.com/make-software/casper-event-standard). Enables the event-driven pattern for *Rust* applications integrated with *Casper blokchain*.
+Toolkit for fetching and parsing *contract-level events* that follow the https://github.com/make-software/casper-event-standard[Casper Event Standard]. Enables the event-driven pattern for *Rust* applications integrated with *Casper blokchain*.
 
-*NOTE:* _Casper Event Toolkit_ is similar to MAKE's [ces-go-parser](https://github.com/make-software/ces-go-parser) and [ces-js-parser](https://github.com/make-software/ces-js-parser), but enhanced with ability to get events directly from the global storage.
+*NOTE:* _Casper Event Toolkit_ is similar to MAKE's https://github.com/make-software/ces-go-parser[ces-go-parser] and https://github.com/make-software/ces-js-parser[ces-js-parser], but enhanced with ability to get events directly from the global storage.
 
 == Requirements
 

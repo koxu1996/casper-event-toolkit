@@ -8,7 +8,16 @@ mod cep78;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("*====================================*");
+    println!("| Casper Event Toolkit - CEP-78 demo |");
+    println!("*====================================*");
+    println!("\n");
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
     let client = CasperClient::default_mainnet();
+
+    println!("Fetching metadata of contract fe03..a7ff:");
+    std::thread::sleep(std::time::Duration::from_secs(1));
 
     let metadata = CesMetadataRef::fetch_metadata(
         &client,
@@ -16,17 +25,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     )
     .await?;
 
+    println!("-> events schema uref: {}", metadata.events_schema);
+    println!("-> events count uref: {}", metadata.events_length);
+    println!("-> events data uref: {}", metadata.events_data);
+    println!("\n");
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
     let fetcher = Fetcher {
         client: CasperClient::default_mainnet(),
         ces_metadata: metadata,
     };
 
+    println!("Extracting schema:");
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
     let schemas = fetcher.fetch_schema().await?;
     // Alternatively - user locally defined schemas.
     //let schemas = cep78::schemas::get_local_schemas();
 
+    println!("-> {:?}", schemas);
+    println!("\n");
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
+    println!("Fetching events count:");
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
     let num_events = fetcher.fetch_events_count().await?;
-    println!("Events count: {}", num_events);
+
+    println!("-> {}", num_events);
+    println!("\n");
+    std::thread::sleep(std::time::Duration::from_secs(1));
 
     // Fetch events from particular deploy.
     // let events = fetcher
@@ -38,15 +66,25 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Fetch some event from storage.
     let event_id = 3;
+
+    println!("Fetching event {}:", event_id);
+    std::thread::sleep(std::time::Duration::from_secs(1));
+
     let dynamic_event = fetcher.fetch_event(event_id, &schemas).await?;
-    println!("Event data parsed dynamically: {:?}", dynamic_event);
+
+    println!("-> {:?}", dynamic_event);
+    std::thread::sleep(std::time::Duration::from_secs(1));
+    println!("\n");
+
+    println!("Parsing event {}:", event_id);
+    std::thread::sleep(std::time::Duration::from_secs(1));
 
     match dynamic_event.name.as_str() {
         "Mint" => {
             let data = dynamic_event.to_ces_bytes()?;
             let (parsed_further, rem) = cep78::events::Mint::from_bytes(&data).unwrap(); // TODO
             assert!(rem.len() == 0);
-            println!("Event data parsed statically: {:?}", parsed_further);
+            println!("-> {:?}", parsed_further);
         }
         other => {
             println!("Unknown event type: {}", other)

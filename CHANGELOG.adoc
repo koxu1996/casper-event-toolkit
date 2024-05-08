@@ -1,0 +1,11 @@
+= Casper Event Toolkit - Changelog
+
+== Unreleased
+
+Improvements::
+
+  * Expose CES type `Schemas`. (4909a76)
+
+== 0.1.0 (2024-04-22)
+
+Initial release.

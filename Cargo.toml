@@ -11,9 +11,14 @@ name = "cep78_demo"
 
 [dependencies]
 casper-client = "2.0.0"
-casper-event-standard = "0.4.1"
-casper-hashing = "2.0.0"
-casper-types = "3.0.0"
+casper-event-standard = "0.5.0"
+casper-hashing = "3.0.0"
+casper-types = "4.0.1"
 hex = "0.4"
 thiserror = "1.0"
 tokio = { version = "1", features = ["full"] }
+
+[patch.crates-io]
+casper-client = { git = "https://github.com/casper-ecosystem/casper-client-rs" }
+casper-hashing = { git = "https://github.com/casper-network/casper-node", branch = "dev" }
+casper-types = { git = "https://github.com/casper-network/casper-node", branch = "dev" }

@@ -74,7 +74,7 @@ impl CasperClient {
             rpc_id,
             &self.rpc_endpoint,
             verbosity,
-            global_state_identifier,
+            Some(global_state_identifier),
             key,
             path,
         )

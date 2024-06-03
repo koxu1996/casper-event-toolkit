@@ -10,6 +10,7 @@ version = "0.1.1"
 name = "cep78_demo"
 
 [dependencies]
+bincode = "1.3.3"
 casper-client = "2.0.0"
 casper-client-hashing = { package = "casper-hashing", version = "2.0.0" }
 casper-event-standard = "0.4.1"

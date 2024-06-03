@@ -38,7 +38,7 @@ impl Fetcher {
 
     pub async fn fetch_event(
         &self,
-        id: u64,
+        id: u32,
         event_schema: &Schemas,
     ) -> Result<Event, ToolkitError> {
         let events_data_uref = &self.ces_metadata.events_data;

@@ -23,63 +23,42 @@ pub fn digest_from_client_types(digest: casper_client_hashing::Digest) -> Digest
     digest
 }
 
-/// Recreate URef by serialization roundtrip.
-pub fn uref_to_client_types(uref: &URef) -> Result<casper_client_types::URef, ToolkitError> {
-    let addr: casper_client_types::URefAddr = uref.addr();
-
-    let access_rights_bytes = bincode::serialize(&uref.access_rights())
-        .map_err(|_e| ToolkitError::SerializationError { context: "URef" })?;
-    let access_rights: casper_client_types::AccessRights =
-        bincode::deserialize(&access_rights_bytes).map_err(|_e| {
-            ToolkitError::DeserializationError {
-                context: "client URef",
-            }
-        })?;
-
-    let uref = casper_client_types::URef::new(addr, access_rights);
-
-    Ok(uref)
+pub fn uref_to_client_types(input: &URef) -> Result<casper_client_types::URef, ToolkitError> {
+    convert_types(input, "URef")
 }
 
-/// Recreate CLValue by serialization roundtrip.
 pub fn clvalue_from_client_types(
-    clvalue: &casper_client_types::CLValue,
+    input: &casper_client_types::CLValue,
 ) -> Result<CLValue, ToolkitError> {
-    let clvalue_bytes =
-        bincode::serialize(&clvalue).map_err(|_e| ToolkitError::SerializationError {
-            context: "client CLValue",
-        })?;
-    let clvalue: CLValue = bincode::deserialize(&clvalue_bytes)
-        .map_err(|_e| ToolkitError::DeserializationError { context: "CLValue" })?;
-
-    Ok(clvalue)
+    convert_types(input, "client CLValue")
 }
 
-/// Recreate ExecutionResults by serialization roundtrip.
 pub fn execution_result_from_client_types(
-    execution_result: &casper_client_types::ExecutionResult,
+    input: &casper_client_types::ExecutionResult,
 ) -> Result<ExecutionResult, ToolkitError> {
-    let execution_result_bytes =
-        bincode::serialize(&execution_result).map_err(|_e| ToolkitError::SerializationError {
-            context: "client ExecutionResult",
-        })?;
-    let execution_result: ExecutionResult =
-        bincode::deserialize(&execution_result_bytes).map_err(|_e| {
-            ToolkitError::DeserializationError {
-                context: "ExecutionResult",
-            }
-        })?;
-
-    Ok(execution_result)
+    convert_types(input, "client ExecutionResult")
 }
 
-/// Recreate Key by serialization roundtrip.
-pub fn key_from_client_types(key: &casper_client_types::Key) -> Result<Key, ToolkitError> {
-    let key_bytes = bincode::serialize(&key).map_err(|_e| ToolkitError::SerializationError {
-        context: "client Key",
-    })?;
-    let key: Key = bincode::deserialize(&key_bytes)
-        .map_err(|_e| ToolkitError::DeserializationError { context: "Key" })?;
+pub fn key_from_client_types(input: &casper_client_types::Key) -> Result<Key, ToolkitError> {
+    convert_types(input, "client Key")
+}
 
-    Ok(key)
+/// Performs serialization rountrip over 2 different types.
+fn convert_types<T, U>(input: &T, type_context: &'static str) -> Result<U, ToolkitError>
+where
+    T: serde::Serialize,
+    U: serde::de::DeserializeOwned,
+{
+    let serialized_bytes =
+        bincode::serialize(input).map_err(|_e| ToolkitError::SerializationError {
+            context: type_context,
+        })?;
+
+    let deserialized: U = bincode::deserialize(&serialized_bytes).map_err(|_e| {
+        ToolkitError::DeserializationError {
+            context: type_context,
+        }
+    })?;
+
+    Ok(deserialized)
 }

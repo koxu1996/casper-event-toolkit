@@ -15,7 +15,7 @@ pub enum ToolkitError {
 
     /// Unable to parse hash.
     #[error("unparsable hash address: {context}")]
-    InvalidHash { context: &'static str},
+    InvalidHash { context: &'static str },
 
     /// Expected contract type at stored value.
     #[error("stored value type invalid, expected {expected_type}")]

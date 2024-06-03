@@ -10,14 +10,14 @@ pub fn parse_raw_event_name_and_data(bytes: &[u8]) -> Result<(String, Vec<u8>), 
         u32::from_bytes(bytes).map_err(|_e| ToolkitError::DeserializationError {
             context: "event data length",
         })?;
-    let (event_name, event_data) =
-        String::from_bytes(event_data_with_name).map_err(|_e| ToolkitError::DeserializationError {
+    let (event_name, event_data) = String::from_bytes(event_data_with_name).map_err(|_e| {
+        ToolkitError::DeserializationError {
             context: "event name",
-        })?;
-    let event_name =
-        event_name
-            .strip_prefix("event_")
-            .ok_or_else(|| ToolkitError::MissingEventPrefix)?;
+        }
+    })?;
+    let event_name = event_name
+        .strip_prefix("event_")
+        .ok_or_else(|| ToolkitError::MissingEventPrefix)?;
 
     Ok((event_name.to_string(), event_data.to_vec()))
 }

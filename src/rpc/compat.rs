@@ -7,20 +7,16 @@ use casper_types::URef;
 
 use crate::error::ToolkitError;
 
-/// Recreate `Digest` to avoid leaking incompatible `casper-client` types.
-pub fn digest_to_client_types(digest: Digest) -> casper_client_hashing::Digest {
-    let raw_bytes: [u8; Digest::LENGTH] = digest.into();
-    let digest = casper_client_hashing::Digest::from(raw_bytes);
-
-    digest
+pub fn digest_to_client_types(
+    input: &Digest,
+) -> Result<casper_client_hashing::Digest, ToolkitError> {
+    convert_types(input, "Digest")
 }
 
-/// Recreate incompatible `Digest` from `casper-client` types.
-pub fn digest_from_client_types(digest: casper_client_hashing::Digest) -> Digest {
-    let raw_bytes: [u8; Digest::LENGTH] = digest.into();
-    let digest = Digest::from(raw_bytes);
-
-    digest
+pub fn digest_from_client_types(
+    input: &casper_client_hashing::Digest,
+) -> Result<Digest, ToolkitError> {
+    convert_types(input, "client Digest")
 }
 
 pub fn uref_to_client_types(input: &URef) -> Result<casper_client_types::URef, ToolkitError> {

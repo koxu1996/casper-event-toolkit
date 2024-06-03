@@ -1,46 +1,11 @@
 use casper_event_standard::casper_types;
-use casper_hashing::Digest;
-use casper_types::CLValue;
-use casper_types::ExecutionResult;
-use casper_types::Key;
-use casper_types::URef;
 
 use crate::error::ToolkitError;
 
-pub fn digest_to_client_types(
-    input: &Digest,
-) -> Result<casper_client_hashing::Digest, ToolkitError> {
-    convert_types(input, "Digest")
-}
-
-pub fn digest_from_client_types(
-    input: &casper_client_hashing::Digest,
-) -> Result<Digest, ToolkitError> {
-    convert_types(input, "client Digest")
-}
-
-pub fn uref_to_client_types(input: &URef) -> Result<casper_client_types::URef, ToolkitError> {
-    convert_types(input, "URef")
-}
-
-pub fn clvalue_from_client_types(
-    input: &casper_client_types::CLValue,
-) -> Result<CLValue, ToolkitError> {
-    convert_types(input, "client CLValue")
-}
-
-pub fn execution_result_from_client_types(
-    input: &casper_client_types::ExecutionResult,
-) -> Result<ExecutionResult, ToolkitError> {
-    convert_types(input, "client ExecutionResult")
-}
-
-pub fn key_from_client_types(input: &casper_client_types::Key) -> Result<Key, ToolkitError> {
-    convert_types(input, "client Key")
-}
+type CompatResult<T> = Result<T, ToolkitError>;
 
 /// Performs serialization rountrip over 2 different types.
-fn convert_types<T, U>(input: &T, type_context: &'static str) -> Result<U, ToolkitError>
+fn convert_types<T, U>(input: &T, type_context: &'static str) -> CompatResult<U>
 where
     T: serde::Serialize,
     U: serde::de::DeserializeOwned,
@@ -57,4 +22,36 @@ where
     })?;
 
     Ok(deserialized)
+}
+
+pub fn clvalue_from_client_types(
+    input: &casper_client_types::CLValue,
+) -> CompatResult<casper_types::CLValue> {
+    convert_types(input, "client CLValue")
+}
+
+pub fn digest_from_client_types(
+    input: &casper_client_hashing::Digest,
+) -> CompatResult<casper_hashing::Digest> {
+    convert_types(input, "client Digest")
+}
+
+pub fn digest_to_client_types(
+    input: &casper_hashing::Digest,
+) -> CompatResult<casper_client_hashing::Digest> {
+    convert_types(input, "Digest")
+}
+
+pub fn execution_result_from_client_types(
+    input: &casper_client_types::ExecutionResult,
+) -> CompatResult<casper_types::ExecutionResult> {
+    convert_types(input, "client ExecutionResult")
+}
+
+pub fn key_from_client_types(input: &casper_client_types::Key) -> CompatResult<casper_types::Key> {
+    convert_types(input, "client Key")
+}
+
+pub fn uref_to_client_types(input: &casper_types::URef) -> CompatResult<casper_client_types::URef> {
+    convert_types(input, "URef")
 }

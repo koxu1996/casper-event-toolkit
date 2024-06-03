@@ -303,6 +303,7 @@ dependencies = [
  "casper-hashing 3.0.0",
  "casper-types 3.0.0",
  "hex",
+ "serde",
  "thiserror",
  "tokio",
 ]

@@ -7,6 +7,7 @@ Improvements::
   * Use `u32` for `fetch_event` to improve composability with `fetch_events_count`. (58cc582)
   * Decouple `casper_hashing` dependency from RPC client (2ff798b).
   * Rely on `casper_types` from CES library. (0a1cc9f).
+  * Decouple `casper_types` dependency from RPC client. (3badff9)
 
 == 0.1.1 (2024-05-08)
 

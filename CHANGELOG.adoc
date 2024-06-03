@@ -8,6 +8,7 @@ Improvements::
   * Decouple `casper_hashing` dependency from RPC client. (2ff798b)
   * Rely on `casper_types` from CES library. (0a1cc9f)
   * Decouple `casper_types` dependency from RPC client. (3badff9)
+  * Update `casper_event_standard` to `0.5.0`. (decddea)
 
 == 0.1.1 (2024-05-08)
 

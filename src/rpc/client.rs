@@ -5,6 +5,8 @@ use casper_types::{CLValue, HashAddr, URef};
 use crate::error::ToolkitError;
 use crate::rpc::id_generator::JsonRpcIdGenerator;
 
+use super::compat;
+
 pub const DEFAULT_MAINNET_RPC_ENDPOINT: &str = "https://mainnet.casper-node.xyz/rpc";
 pub const DEFAULT_TESTNET_RPC_ENDPOINT: &str = "https://testnet.casper-node.xyz/rpc";
 
@@ -52,6 +54,7 @@ impl CasperClient {
                 context: "empty state root hash".into(),
             }),
         }?;
+        let state_root_hash = compat::digest_from_client_types(state_root_hash);
 
         Ok(state_root_hash)
     }
@@ -63,6 +66,7 @@ impl CasperClient {
         path: Vec<String>,
     ) -> Result<StoredValue, ToolkitError> {
         // Wrap state root hash.
+        let state_root_hash = compat::digest_to_client_types(state_root_hash);
         let global_state_identifier =
             casper_client::rpcs::GlobalStateIdentifier::StateRootHash(state_root_hash);
 
@@ -138,6 +142,7 @@ impl CasperClient {
     ) -> Result<CLValue, ToolkitError> {
         // Fetch latest state root hash.
         let state_root_hash = self.get_state_root_hash().await?;
+        let state_root_hash = compat::digest_to_client_types(state_root_hash);
 
         // Build dictionary item identifier.
         let dictionary_item_key = dictionary_item_key.to_string();

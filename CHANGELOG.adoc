@@ -2,6 +2,10 @@
 
 == Unreleased
 
+Improvements::
+
+  * Use `u32` for `fetch_event` to improve composability with `fetch_events_count`. (58cc582)
+
 == 0.1.1 (2024-05-08)
 
 Improvements::

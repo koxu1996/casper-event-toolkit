@@ -1,3 +1,4 @@
+use casper_event_standard::casper_types;
 use casper_types::contracts::NamedKeys;
 use casper_types::{Key, URef};
 

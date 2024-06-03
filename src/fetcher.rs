@@ -1,5 +1,6 @@
 pub use casper_event_standard::Schemas;
 
+use casper_event_standard::casper_types;
 use casper_types::bytesrepr::FromBytes;
 
 use crate::error::ToolkitError;

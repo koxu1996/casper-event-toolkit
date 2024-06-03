@@ -1,4 +1,5 @@
 use casper_client::types::StoredValue;
+use casper_event_standard::casper_types;
 use casper_hashing::Digest;
 use casper_types::{CLValue, HashAddr, URef};
 

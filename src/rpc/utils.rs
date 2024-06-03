@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 
 use casper_client::types::Contract;
+use casper_event_standard::casper_types;
 use casper_types::Key;
 
 use crate::error::ToolkitError;

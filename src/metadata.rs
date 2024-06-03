@@ -1,3 +1,5 @@
+use casper_event_standard::casper_types;
+
 pub use casper_types::URef;
 
 use crate::error::ToolkitError;

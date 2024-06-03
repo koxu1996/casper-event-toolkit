@@ -1,3 +1,6 @@
+// Reuse Casper types from CES library.
+use casper_event_standard::casper_types;
+
 /// CEP-78 events are defined with Casper Event Standard.
 /// Source: https://github.com/casper-ecosystem/cep-78-enhanced-nft/blob/7815f090b51b9153dd33a3d7c0ab939b61e5a411/contract/src/events/events_ces.rs
 ///

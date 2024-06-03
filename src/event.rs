@@ -1,3 +1,4 @@
+use casper_event_standard::casper_types;
 use casper_event_standard::Schema;
 use casper_types::{
     bytesrepr::{

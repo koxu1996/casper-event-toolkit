@@ -1,3 +1,6 @@
+// Reuse Casper types from CES library.
+use casper_event_standard::casper_types;
+
 use casper_types::bytesrepr::FromBytes;
 
 use casper_event_toolkit::fetcher::Fetcher;

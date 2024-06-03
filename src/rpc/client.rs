@@ -6,7 +6,7 @@ use casper_types::{CLValue, HashAddr, URef};
 use crate::error::ToolkitError;
 use crate::rpc::id_generator::JsonRpcIdGenerator;
 
-use super::compat;
+use super::compat::{self, uref_to_client_types};
 
 pub const DEFAULT_MAINNET_RPC_ENDPOINT: &str = "https://mainnet.casper-node.xyz/rpc";
 pub const DEFAULT_TESTNET_RPC_ENDPOINT: &str = "https://testnet.casper-node.xyz/rpc";
@@ -63,7 +63,7 @@ impl CasperClient {
     async fn query_global_state(
         &self,
         state_root_hash: Digest,
-        key: casper_types::Key,
+        key: casper_client_types::Key,
         path: Vec<String>,
     ) -> Result<StoredValue, ToolkitError> {
         // Wrap state root hash.
@@ -97,7 +97,7 @@ impl CasperClient {
         let state_root_hash = self.get_state_root_hash().await?;
 
         // Contract is stored directly at given hash.
-        let key = casper_types::Key::Hash(contract_hash);
+        let key = casper_client_types::Key::Hash(contract_hash);
         let path = vec![];
 
         let stored_value = self.query_global_state(state_root_hash, key, path).await?;
@@ -122,7 +122,8 @@ impl CasperClient {
         let state_root_hash = self.get_state_root_hash().await?;
 
         // Build uref key.
-        let key = casper_types::Key::URef(*uref);
+        let uref = uref_to_client_types(uref)?;
+        let key = casper_client_types::Key::URef(uref);
         let path = vec![];
 
         let stored_value = self.query_global_state(state_root_hash, key, path).await?;
@@ -132,6 +133,7 @@ impl CasperClient {
                 expected_type: "clvalue",
             }),
         }?;
+        let clvalue = compat::clvalue_from_client_types(&clvalue)?;
 
         Ok(clvalue)
     }
@@ -146,10 +148,11 @@ impl CasperClient {
         let state_root_hash = compat::digest_to_client_types(state_root_hash);
 
         // Build dictionary item identifier.
+        let dictionary_seed_uref = uref_to_client_types(dictionary_seed_uref)?;
         let dictionary_item_key = dictionary_item_key.to_string();
         let dictionary_item_identifier =
             casper_client::rpcs::DictionaryItemIdentifier::new_from_seed_uref(
-                *dictionary_seed_uref,
+                dictionary_seed_uref,
                 dictionary_item_key,
             );
 
@@ -173,6 +176,7 @@ impl CasperClient {
                 expected_type: "clvalue",
             }),
         }?;
+        let clvalue = compat::clvalue_from_client_types(&clvalue)?;
 
         Ok(clvalue)
     }
@@ -204,7 +208,9 @@ impl CasperClient {
                 context: "execution results count different than 1".into(),
             }),
         }?;
+        let execution_result =
+            compat::execution_result_from_client_types(&execution_result.result)?;
 
-        Ok(execution_result.result)
+        Ok(execution_result)
     }
 }

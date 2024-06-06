@@ -1,5 +1,7 @@
 pub mod client;
 
-pub(crate) mod compat;
+// NOTE: Temporarily exposing it for usage in Kairos.
+pub mod compat;
+
 pub(crate) mod id_generator;
 pub(crate) mod utils;

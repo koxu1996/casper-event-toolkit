@@ -52,6 +52,12 @@ pub fn key_from_client_types(input: &casper_client_types::Key) -> CompatResult<c
     convert_types(input, "client Key")
 }
 
+// NOTE: This method is used in Kairos.
+#[allow(unused)]
+pub fn key_to_client_types(input: &casper_types::Key) -> CompatResult<casper_client_types::Key> {
+    convert_types(input, "Key")
+}
+
 pub fn uref_to_client_types(input: &casper_types::URef) -> CompatResult<casper_client_types::URef> {
     convert_types(input, "URef")
 }

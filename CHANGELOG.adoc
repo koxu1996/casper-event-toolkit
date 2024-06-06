@@ -2,6 +2,10 @@
 
 == Unreleased
 
+Fixes::
+
+  * Use derefence instead of cloning in `ByteArray` parsing. (52f5057)
+
 == 0.1.2 (2024-06-03)
 
 Improvements::

@@ -2,6 +2,8 @@
 
 == Unreleased
 
+== 0.1.3 (2024-06-06)
+
 Changes::
 
   * Temporarily expose `compat` module - for Kairos project. (3700db8)

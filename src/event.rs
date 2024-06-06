@@ -349,7 +349,7 @@ fn parse_dynamic_clvalue<'a>(
             let (t_parsed, new_remainder) = bytes.split_at(fixed_length);
             value_bytes.extend(t_parsed);
             (
-                CLValue::from_components(casper_types::CLType::ByteArray(t.clone()), value_bytes),
+                CLValue::from_components(casper_types::CLType::ByteArray(*t), value_bytes),
                 new_remainder,
             )
         }

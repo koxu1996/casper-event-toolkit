@@ -2,6 +2,10 @@
 
 == Unreleased
 
+Changes::
+
+  * Temporarily expose `compat` module - for Kairos project. (3700db8)
+
 Fixes::
 
   * Use derefence instead of cloning in `ByteArray` parsing. (52f5057)
